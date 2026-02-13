@@ -176,10 +176,12 @@ class KeaDhcpv4 extends BaseModel
                 'reservations' => []
             ];
 
-            // Conditionally include DDNS settings only when send-updates is enabled,
-            // and only include fields that have meaningful values.;
-            if ($subnet->ddns_options->send_updates->isEqual('1')) {
-                $record['ddns-send-updates'] = true;
+            // Always explicitly set ddns-send-updates per subnet. When the global
+            // dhcp-ddns.enable-updates is true (because at least one subnet has DDNS
+            // enabled), subnets without explicit ddns-send-updates=false would inherit
+            // the global setting and receive unwanted DDNS updates.
+            $record['ddns-send-updates'] = $subnet->ddns_options->send_updates->isEqual('1');
+            if ($record['ddns-send-updates']) {
                 if (!($subnet->ddns_options->qualifying_suffix->isEmpty())) {
                     $record['ddns-qualifying-suffix'] = $subnet->ddns_options->qualifying_suffix->getValue();
                 }
