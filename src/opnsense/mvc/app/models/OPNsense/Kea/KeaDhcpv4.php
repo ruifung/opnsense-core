@@ -186,9 +186,7 @@ class KeaDhcpv4 extends BaseModel
                 if ($subnet->ddns_options->update_on_renew->isEqual('1')) {
                     $record['ddns-update-on-renew'] = true;
                 }
-                if (!($subnet->ddns_options->conflict_resolution_mode->isEmpty())) {
-                    $record['ddns-conflict-resolution-mode'] = $subnet->ddns_options->conflict_resolution_mode->getValue();
-                }
+                $record['ddns-conflict-resolution-mode'] = $subnet->ddns_options->conflict_resolution_mode->getValue();
             }
             /* add pools */
             foreach (array_filter(explode("\n", $subnet->pools->getValue())) as $pool) {
